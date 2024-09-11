@@ -1,0 +1,48 @@
+﻿@page
+@model RoostCare.Pages.HatchManagement.IndexModel
+@{
+}
+<div class="mb-4">
+    <h4 class="m-0">Hatch</h4>
+    <span class="text-body-tertiary">Hatched List</span>
+</div>
+<div class="d-flex justify-content-end mb-2">
+    <a asp-page="./Hatchlings" class="btn btn-success">Hatcher <i class="fa fa-arrow-right"></i></a>
+</div>
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data2" class="table-bordered table table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Incubation Batch Id</th>
+                    <th>Hatching Start</th>
+                    <th>Hatching End</th>
+                    <th>Number Of Hatchlings</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var hatch in Model.Hatches)
+                {
+                    @if (hatch.NumberOfHatchlings != null)
+                    {
+                        <tr>
+                            <td>@hatch.Id</td>
+                            <td>@hatch.IncubationId.ToString("00000")</td>
+                            <td>@hatch.HatchingStart.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@hatch.HatchingEnd.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@hatch.NumberOfHatchlings</td>
+                            <td>
+                                <button data-bs-toggle="modal" data-bs-target="#delete-record-@(hatch.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel(){rId = hatch.Id.ToString()}" />
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+   
+
+</div>

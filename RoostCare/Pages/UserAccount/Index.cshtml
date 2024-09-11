@@ -1,0 +1,75 @@
+﻿@page
+@model RoostCare.Pages.UserAccount.IndexModel
+<div class="bg-white shadow rounded-3 p-4 rounded-4 container">
+	<form method="post">
+		@Html.AntiForgeryToken()
+		<div class="row">
+			<div class="col-12 mb-3">
+				<h6 class="text-center py-2 bg-success-subtle rounded-pill">Account</h6>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="mb-2">User Name</label>
+				<input asp-for="Input.UserName" class="form-control" placeholder="Enter here..." />
+				<span class="text-danger" asp-validation-for="Input.UserName"></span>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="mb-2">Email</label>
+				<input asp-for="Input.Email" class="form-control" placeholder="Enter here..." />
+				<span class="text-danger" asp-validation-for="Input.Email"></span>
+			</div>
+			<div class="col-12 mb-3">
+				<h5 class="text-success">Change Password <i class="fa-solid fa-lock"></i> <i class="fa fa-pen fs-6" data-bs-toggle="modal" data-bs-target="#update-password"></i></h5>
+			</div>
+			<div class="col-12 mb-3">
+				<h6 class="text-center py-2 bg-success-subtle rounded-pill">Personal Information</h6>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label class="mb-2">First Name</label>
+				<input asp-for="Input.FirstName" class="form-control" placeholder="Enter here..." />
+				<span class="text-danger" asp-validation-for="Input.FirstName"></span>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label asp-for="Input.MiddleName" class="mb-2">Middle Name</label>
+				<input asp-for="Input.MiddleName" class="form-control" placeholder="Enter here..." />
+				<span class="text-danger" asp-validation-for="Input.MiddleName"></span>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label asp-for="Input.LastName" class="mb-2">Last Name</label>
+			    <input asp-for="Input.LastName" class="form-control" placeholder="Enter here..." />
+				<span class="text-danger" asp-validation-for="Input.LastName"></span>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label asp-for="Input.Sex" class="mb-2">Sex</label>
+				<select asp-for="Input.Sex" asp-items="@Html.GetEnumSelectList<Sex>()" class="form-select" placeholder="Enter here..." ></select>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label asp-for="Input.PhoneNumber" class="mb-2">Phone Number</label>
+				<input asp-for="Input.PhoneNumber" type="number" class="form-control" placeholder="Enter here..." />
+				<span class="text-danger" asp-validation-for="Input.PhoneNumber"></span>
+			</div>
+			<div class="col-lg-6 mb-3">
+				<label asp-for="Input.Address" class="mb-2">Address</label>
+				<textarea asp-for="Input.Address" class="form-control" placeholder="Enter here..."></textarea>
+				<span class="text-danger" asp-validation-for="Input.Address"></span>
+			</div>
+			<div class="col-12 mb-3">
+				<div class="d-flex flex-lg-row gap-2 flex-md-row flex-column justify-content-lg-end justify-content-md-end">
+					<button class="btn-light btn" type="reset"> Cancel</button>
+
+					<button class="btn btn-success" type="submit">Update</button>
+					@if (!User.IsInRole("Admin"))
+					{
+						<button class="btn btn-danger" type="button">Delete</button>
+					}
+				
+				</div>
+				
+				
+			</div>
+		</div>
+	</form>
+	<partial name="_ChangePassword" model="new UpdatePasswordInputModel()" />
+</div>
+@section Scripts{
+	<partial name="_ValidationScriptsPartial"/>
+}

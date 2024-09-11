@@ -1,0 +1,43 @@
+﻿@model IncubationInputModel
+<div class="modal fade" id="update-incubation-@(Model.Id)">
+    <div class="modal-dialog">
+        <form method="post" asp-page-handler="Update">
+            <input asp-for="Id" type="hidden"/>
+            <input asp-for="AddedAt" type="hidden" />
+            <input asp-for="DateLaid" type="hidden" />
+            <input asp-for="NumberOfEggs" type="hidden" />
+            <input asp-for="IncubationStart" type="hidden" />
+            <input asp-for="IncubationComplete" type="hidden" />
+            <div class="modal-content">
+                <div style="background-color: #034007" class="text-white py-3 modal-header">
+                    <h5>Complete Incubation</h5>
+                    <i data-bs-dismiss="modal" class="clickable fa-solid fa-xmark"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="NumberOfNonViableEggs" class="mb-2"></label><span class="text-danger">*</span>
+                        <input asp-for="NumberOfNonViableEggs" placeholder="Enter here.." required class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="NumberOfNonViableEggs" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NumberOfViableEggs" class="mb-2"></label><span class="text-danger">*</span>
+                        <input asp-for="NumberOfViableEggs" required placeholder="Enter here.." class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="NumberOfViableEggs" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+

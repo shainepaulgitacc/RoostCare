@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RoostCare</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/RoostCare.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <partial name="PartialViews/_Header" />
+    <partial name="PartialViews/_Sidebar" />
+    <partial name="PartialViews/_AlertMessage" />
+    <div id="content" class="position-relative pt-5">
+        <div class="container pt-5">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/js/RealtimeNotification.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @{
+        var validationResult = TempData["validation-message"] as string;
+    }
+    @if (!string.IsNullOrEmpty(validationResult))
+    {
+        <script>
+            $(document).ready(function () {
+                // Show alert after 3 seconds
+                setTimeout(function () {
+                    $("#alert").addClass("active-alert");
+                }, 200);
+
+                // Hide alert after 10 seconds
+                setTimeout(function () {
+                    $("#alert").removeClass("active-alert");
+                }, 10000);
+            });
+        </script>
+    }
+    
+
+</body>
+</html>

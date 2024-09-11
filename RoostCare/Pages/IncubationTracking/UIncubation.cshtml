@@ -1,0 +1,99 @@
+﻿@page
+@model RoostCare.Pages.IncubationTracking.UIncubationModel
+@{
+}
+<div class="mb-4">
+    <h4 class="m-0">Incubation</h4>
+    <a asp-page="./Index">Incubated /</a> <span class="text-body-tertiary">Under Incubations</span>
+</div>
+<button data-bs-target="#add-incubation" data-bs-toggle="modal" class="btn btn-success px-3 mb-2">ADD INCUBATION</button>
+<partial name="_AddIncubation" model="new IncubationInputModel()" />
+<div class="rounded-3 p-2 shadow border border-success border-3 mb-5" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data" class="table table-bordered table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date Laid</th>
+                    <th>Number Of Eggs</th>
+                    <th>Incubation Start</th>
+                    <th>Incubation Complete</th>
+                    <th>Remaining Day and Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var incubation in Model.UnderIncubations)
+                {
+                    TimeSpan remainingTime = incubation.IncubationComplete - DateTime.Now;
+                    int remainingDays = (int)remainingTime.TotalDays;
+                    int remainingHours = remainingTime.Hours;
+                    int remainingMinutes = remainingTime.Minutes;
+                    string remainingDaysString = remainingDays > 1 ? $"{remainingDays}days" : $"{remainingDays}day";
+                    string remainingHoursString = remainingHours > 1 ? $"{remainingHours}hrs" : $"{remainingHours}hr";
+                    string remainingMinutesString = remainingMinutes > 1 ? $"{remainingMinutes}mins" : $"{remainingMinutes}min";
+                    <tr>
+                        <td>@incubation.Id.ToString("00000")</td>
+                        <td>@incubation.DateLaid.ToString("dd MMM, yyy hh:mm tt")</td>
+                        <td>@incubation.NumberOfEggs</td>
+                        <td>@incubation.IncubationStart.ToString("dd MMM, yyy hh:mm tt")</td>
+                        <td>@incubation.IncubationComplete.ToString("dd MMM, yyy hh:mm tt")</td>
+                        <td class="remaining-time" data-complete="@incubation.IncubationComplete">
+                            @if ((DateTime.Now - incubation.IncubationStart).TotalDays >= 0)
+                            {
+                                @(remainingDays > 0 || remainingHours > 0 || remainingMinutes > 0 ? $"{remainingDaysString},{remainingHoursString},{remainingMinutesString}" : "Completed")
+                            }
+                            else
+                            {
+                                @("Not Started")
+                            }
+                        </td>
+                        <td class="text-nowrap">
+                            <button data-bs-toggle="modal" data-bs-target="#delete-record-@(incubation.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                            <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel(){rId = incubation.Id.ToString()}" />
+                            @if (remainingDays <= 0 && remainingHours <= 0 && remainingMinutes <= 0)
+                            {
+                                <button data-bs-toggle="modal" data-bs-target="#update-incubation-@(incubation.Id)" class="btn btn-success"><i class="fa-solid fa-check"></i></button>
+                                <vc:update-incubation Id="@incubation.Id.ToString()" />
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+    <!--script>
+        function updateRemainingTimes() {
+            var now = new Date();
+
+            $('.remaining-time').each(function () {
+                var $element = $(this);
+                var completeDate = new Date($element.data('complete'));
+                var remainingTime = completeDate - now;
+
+                if (remainingTime > 0) {
+                    var remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+                    var remainingHours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var remainingMinutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+
+                    var remainingDaysString = remainingDays > 1 ? `${remainingDays} days` : `${remainingDays} day`;
+                    var remainingHoursString = remainingHours > 1 ? `${remainingHours} hrs` : `${remainingHours} hr`;
+                    var remainingMinutesString = remainingMinutes > 1 ? `${remainingMinutes} mins` : `${remainingMinutes} min`;
+
+                    $element.text(`${remainingDaysString}, ${remainingHoursString}, ${remainingMinutesString}`);
+                } else {
+                    $element.text("Completed");
+                }
+            });
+        }
+
+        setInterval(updateRemainingTimes, 60000); // Update every minute
+        $(document).ready(updateRemainingTimes);
+    </!--script-->
+
+}

@@ -1,0 +1,54 @@
+﻿@model RoosterInputModel
+@inject IBaseRepository<Breed> _breedRepo;
+@{
+    var roosters = await _breedRepo.GetAll();
+}
+<div class="modal fade" id="add-rooster">
+    <div class="modal-dialog">
+        <form method="post" enctype="multipart/form-data" asp-page-handler="AddRooster">
+            @Html.AntiForgeryToken()
+            <div class="modal-content">
+                <div style="background-color: #034007" class="text-white py-3 modal-header">
+                    <h5>Add Rooster</h5>
+                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="BreedId" class="mb-2"></label><span class="text-danger fw-bolder"></span>
+                        <select asp-for="BreedId" asp-items="@roosters.Select(x => new SelectListItem(x.BreedName,x.Id.ToString()))" class="form-select" style="border-color: #034007">
+                            <option value="" hidden disabled selected>Select..</option>
+                        </select>
+                        <span asp-validation-for="BreedId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="RoosterCategory" class="mb-2"></label><span class="text-danger fw-bolder"></span>
+                        <select id="rooster-category-input" asp-for="RoosterCategory" asp-items="@Html.GetEnumSelectList<RoosterCategory>()" class="form-select" style="border-color: #034007">
+                            <option value="" hidden disabled selected></option>
+                        </select>
+                        <span asp-validation-for="RoosterCategory" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3" id="price-input">
+                        <label asp-for="Price" class="mb-2"></label>
+                        <input asp-for="Price" class="form-control" style="border-color: #034007" placeholder="Enter here.." />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="RoosterStatus"></label>
+                        <select class="form-select" style="border-color: #034007" asp-items="@Html.GetEnumSelectList<RoosterStatus>()" asp-for="RoosterStatus"></select>
+                        <span asp-validation-for="RoosterStatus" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="RImageFile" class="mb-2"></label>
+                        <input asp-for="RImageFile" class="form-control" accept="image/*" style="border-color: #034007" placeholder="Enter here.." />
+                        <span asp-validation-for="RImageFile" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+       
+    </div>
+</div>

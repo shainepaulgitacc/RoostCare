@@ -1,0 +1,41 @@
+﻿@model IncubationInputModel
+<div class="modal fade" id="add-incubation">
+    <div class="modal-dialog">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div class="modal-content">
+                <div style="background-color: #034007" class="text-white py-3 modal-header">
+                    <h5>Add Incubation</h5>
+                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="DateLaid" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="DateLaid" class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="DateLaid" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NumberOfEggs" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="NumberOfEggs" class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="NumberOfEggs" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="IncubationStart" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="IncubationStart" class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="IncubationStart" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="IncubationComplete" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="IncubationComplete" class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="IncubationComplete" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,77 @@
+﻿@page
+@model RoostCare.Pages.HatchManagement.HatchlingsModel
+<div class="mb-4">
+    <h4 class="m-0">Hatch</h4>
+    <a asp-page="./Index">Hatched List /</a> <span class="text-body-tertiary">Hatchlings</span>
+</div>
+<button data-bs-target="#add-hatch" data-bs-toggle="modal" class="btn btn-success px-3 mb-2">ADD HATCH</button>
+<partial name="_AddHatch" model="new HatchInputModel()" />
+<div class="rounded-3 p-2 shadow border border-success border-3 mb-5" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data" class="table-bordered table table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Incubation Batch Id</th>
+                    <th>Viable Eggs</th>
+                    <th>Hatching Start</th>
+                    <th>Hatching End</th>
+                    <th>Remaining Day and Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var hatch in Model.Hatchlings)
+                {
+                    TimeSpan remainingTime = hatch.Hatch.HatchingEnd - DateTime.Now;
+                    int remainingDays = (int)remainingTime.TotalDays;
+                    int remainingHours = remainingTime.Hours;
+                    int remainingMinutes = remainingTime.Minutes;
+                    string remainingDaysString = remainingDays > 1 ? $"{remainingDays}days" : $"{remainingDays}day";
+                    string remainingHoursString = remainingHours > 1 ? $"{remainingHours}hrs" : $"{remainingHours}hr";
+                    string remainingMinutesString = remainingMinutes > 1 ? $"{remainingMinutes}mins" : $"{remainingMinutes}min";
+                    @if (hatch.Hatch.NumberOfHatchlings == null)
+                    {
+                        <tr>
+                            <td>@hatch.Hatch.Id.ToString("00000")</td>
+                            <td>@hatch.Hatch.IncubationId.ToString("00000")</td>
+                            <td>@($"{hatch.Hatch.Incubation.NumberOfViableEggs} pcs")</td>
+                            <td>@hatch.Hatch.HatchingStart.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@hatch.Hatch.HatchingEnd.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td class="text-nowrap">
+                                @if ((DateTime.Now - hatch.Hatch.HatchingStart).TotalDays >= 0)
+                                {
+
+                                    @(remainingDays > 0 || remainingHours > 0 || remainingMinutes > 0 ? $"{remainingDaysString},{remainingHoursString},{remainingMinutesString}" : "Completed")
+                                }
+                                else
+                                {
+                                    @("Not Started")
+                                }
+
+                            </td>
+                            <td class="text-nowrap">
+
+
+                                <button data-bs-toggle="modal" data-bs-target="#delete-record-@(hatch.Hatch.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel(){rId = hatch.Hatch.Id.ToString()}" />
+                                @if (remainingDays <= 0 && remainingHours <= 0 && remainingMinutes <= 0)
+                                {
+                                    <button data-bs-toggle="modal" data-bs-target="#complete-hatch-@(hatch.Hatch.Id)" class="btn btn-success"><i class="fa-solid fa-check"></i></button>
+                                    <vc:hatch-complete id="@hatch.Hatch.Id.ToString()" />
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+}

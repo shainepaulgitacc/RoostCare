@@ -1,0 +1,76 @@
+﻿@page
+@model RoostCare.Pages.RoosterManagement.AddUpdateRoosterFightHistoryModel
+@{
+
+}
+<div class="d-flex align-items-center justify-content-center" style="height: 50vh">
+    @if(Model.Input == null)
+    {
+        <form method="post" asp-route-returnUrl="@(Model.PreviousUrl)" asp-route-Id="@Model.RoosterId">
+            <input asp-for="Input.RoosterId" value="@Model.RoosterId" type="hidden" />
+            <div class="bg-white rounded-3 overflow-hidden shadow" style="width: 400px">
+                <h5 class="theme-bg-green text-center text-white mb-4 py-2">Fill up</h5>
+                <div class="p-3">
+                    <div class="mb-3">
+                        <label asp-for="Input.FightResult" class="mb-2 fw-bold">Fight Result<span class="text-danger">*</span></label>
+                        <select class="form-select border border-success" asp-for="Input.FightResult" asp-items="@Html.GetEnumSelectList<FightResult>()"></select>
+                        <span asp-validation-for="Input.FightResult"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.RoosterInjury" class="mb-2 fw-bold">Rooster Injury<span class="text-danger">*</span></label>
+                        <select class="form-select border border-success" asp-for="Input.RoosterInjury" asp-items="@Html.GetEnumSelectList<RoosterInjury>()"></select>
+                        <span asp-validation-for="Input.RoosterInjury"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.DateOfFight" class="mb-2 fw-bold">Date Of the fight</label>
+                        <input class="form-control border border-success" asp-for="Input.DateOfFight" />
+                        <span asp-validation-for="Input.DateOfFight"></span>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-page="./ViewRoosterInformation" asp-route-prevUrl="@Model.PreviousUrl" asp-route-Id="@Model.RoosterId" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn theme-bg-green text-white">Submit</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-page-handler="Update" asp-route-returnUrl="@(Model.PreviousUrl)" asp-route-Id="@Model.RoosterId">
+            <input asp-for="Input.RoosterId" value="@Model.RoosterId" type="hidden" />
+            <input asp-for="Input.AddedAt" type="hidden" />
+            <div class="bg-white rounded-3 overflow-hidden shadow" style="width: 400px">
+                <h5 class="theme-bg-green text-center text-white mb-4 py-2">Fill up</h5>
+                <div class="p-3">
+
+                    <input asp-for="Input.Id" class="form-control text-center" readonly />
+                    <div class="mb-3">
+                        <label asp-for="Input.FightResult" class="mb-2 fw-bold">Fight Result<span class="text-danger">*</span></label>
+                        <select class="form-select border border-success" asp-for="Input.FightResult" asp-items="@Html.GetEnumSelectList<FightResult>()"></select>
+                        <span asp-validation-for="Input.FightResult"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.RoosterInjury" class="mb-2 fw-bold">Rooster Injury<span class="text-danger">*</span></label>
+                        <select class="form-select border border-success" asp-for="Input.RoosterInjury" asp-items="@Html.GetEnumSelectList<RoosterInjury>()"></select>
+                        <span asp-validation-for="Input.RoosterInjury"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.DateOfFight" class="mb-2 fw-bold">Date Of the fight</label>
+                        <input class="form-control border border-success" asp-for="Input.DateOfFight" />
+                        <span asp-validation-for="Input.DateOfFight"></span>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-page="./ViewRoosterInformation" asp-route-prevUrl="@Model.PreviousUrl" asp-route-Id="@Model.RoosterId" asp-route-Id="@Model.RoosterId" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn theme-bg-green text-white">Update</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    }
+   
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+}

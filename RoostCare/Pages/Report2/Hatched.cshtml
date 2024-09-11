@@ -1,0 +1,118 @@
+﻿@page
+@model RoostCare.Pages.Report2.HatchedModel
+<h5 class="py-2 rounded-3 bg-success-subtle text-center mb-4">Hatched Report</h5>
+<div class="d-flex align-items-center flex-lg-row flex-column justify-content-between mb-3">
+    <h6><b>Hatched: </b> @($"{Model.Hatches.Where(x => x.NumberOfHatchlings != null).Count()}total")</h6>
+    <h6><b>Number Of Hatchlings: </b> @($"{Model.Hatches.Sum(x => x.NumberOfHatchlings)} total")</h6>
+</div>
+<hr>
+<form method="get">
+    @Html.AntiForgeryToken()
+    <div class="row mb-2">
+        <div class="col-lg-4 col-12 mb-2 mb-lg-0">
+            <div class="d-flex flex-lg-row flex-column gap-2">
+                <div>
+                    <label class="mb-1 fw-bolder">Date From</label>
+                    <input required type="date" name="dFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" class="form-control" />
+                </div>
+                <div>
+                    <label class="mb-1 fw-bolder">Date To</label>
+                    <input required type="date" name="dTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" class="form-control" />
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-4 col-12">
+            <div class="d-flex gap-2 align-items-end ms-3 h-100">
+                <button type="submit" class="btn btn-success btn-sm btn-flat">Filter</button>
+                <a asp-page="./Hatched" class="btn btn-primary btn-sm btn-flat">Get All</a>
+                <button type="button" id="button-excel" class="btn btn-info btn-sm text-white"><i class="fa fa-excel-file"></i> Excel</button>
+                <button type="button" id="button-print" class="btn btn-light btn-sm border btn-flat"><i class="fa fa-print"></i> Print</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data" class="table-bordered table table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Incubation Batch Id</th>
+                    <th>Hatching Start</th>
+                    <th>Hatching End</th>
+                    <th>Number Of Hatchlings</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var hatch in Model.Hatches)
+                {
+                    @if (hatch.NumberOfHatchlings != null)
+                    {
+                        <tr>
+                            <td>@hatch.Id</td>
+                            <td>@hatch.IncubationId.ToString("00000")</td>
+                            <td>@hatch.HatchingStart.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@hatch.HatchingEnd.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@hatch.NumberOfHatchlings</td>
+                            <td>
+                                <button data-bs-toggle="modal" data-bs-target="#delete-record-@(hatch.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel(){rId = hatch.Id.ToString()}" />
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<noscript id="print-content">
+    <div class="position-relative">
+        <img src="~/img/RoosterGreen.png" width="80" height="80" class=" position-absolute">
+        <h4 class="m-0 text-center">RoostCare</h4>
+        <h3 class="m-0 fw-bolder text-center">Hatched Report</h3>
+        <h5 class="m-0 text-center">List of all Hatched Record</h5>
+    </div>
+    <hr>
+    <div class="d-flex align-items-center justify-content-between">
+        <h6><b>Hatched: </b> @($"{Model.Hatches.Where(x => x.NumberOfHatchlings != null).Count()}total")</h6>
+        <h6><b>Number Of Hatchlings: </b> @($"{Model.Hatches.Sum(x => x.NumberOfHatchlings)} total")</h6>
+    </div>
+    <hr />
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Incubation Batch Id</th>
+                <th>Hatching Start</th>
+                <th>Hatching End</th>
+                <th>Number Of Hatchlings</th>
+               
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var hatch in Model.Hatches)
+            {
+                @if (hatch.NumberOfHatchlings != null)
+                {
+                    <tr>
+                        <td>@hatch.Id</td>
+                        <td>@hatch.IncubationId.ToString("00000")</td>
+                        <td>@hatch.HatchingStart.ToString("dd MMM, yyy hh:mm tt")</td>
+                        <td>@hatch.HatchingEnd.ToString("dd MMM, yyy hh:mm tt")</td>
+                        <td>@hatch.NumberOfHatchlings</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <hr />
+</noscript>
+@section Scripts {
+    <script src="~/lib/TableExport/tableExcel.js" asp-append-version="true"></script>
+    <script src="~/js/Report.js" asp-append-version="true"></script>
+}
+
+
+

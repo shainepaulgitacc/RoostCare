@@ -1,0 +1,61 @@
+﻿@model UserInputModel
+<div class="modal fade" id="update-user-@(Model.Id)">
+    <div class="modal-dialog">
+        <form method="post" asp-page-handler="Update">
+            <input type="hidden" asp-for="Id"/>
+            <div class="modal-content">
+                <div style="background-color: #034007" class="text-white py-3 modal-header">
+                    <h5>Update User</h5>
+                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="Username" class="mb-2"></label><span class="fw-bolder text-danger">*</span>
+                        <input asp-for="Username" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="FirstName" class="mb-2"></label><span class="fw-bolder text-danger">*</span>
+                        <input asp-for="FirstName" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="MiddleName" class="mb-2"></label>
+                        <input asp-for="MiddleName" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="MiddleName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="LastName" class="mb-2"></label>
+                        <input asp-for="LastName" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Sex" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <select asp-for="Sex" asp-items="@Html.GetEnumSelectList<Sex>()" class="form-select" placeholder="Enter here.."></select>
+                        <span asp-validation-for="Sex" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="mb-2"></label>
+                        <input asp-for="PhoneNumber" type="number" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="mb-2"></label><span class="fw-bolder text-danger">*</span>
+                        <input asp-for="Email" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Address" class="mb-2"></label><span class="fw-bolder text-danger">*</span>
+                        <input asp-for="Address" class="form-control" placeholder="Enter here.." />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light">Cancel</button>
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

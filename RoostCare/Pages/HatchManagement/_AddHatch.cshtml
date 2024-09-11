@@ -1,0 +1,62 @@
+﻿@model HatchInputModel
+@inject IBaseRepository<Incubation> _incRepo
+@inject IBaseRepository<Hatch> _hatchRepo
+@{
+    var incubations = await _incRepo.GetAll();
+    var hatches = await _hatchRepo.GetAll();
+    var incF = incubations.Where(x => x.NumberOfNonViableEggs != null && x.NumberOfViableEggs != null)
+    .GroupJoin(hatches,
+    i => i.Id,
+    h => h.IncubationId,
+    (i, h) => new
+    {
+        Incubation = i,
+        Hatch = h
+    })
+    .Select(x => new
+    {
+        Incubation = x.Incubation,
+        Hatch = x.Hatch.FirstOrDefault()
+    })
+    .Where(x => x.Hatch == null)
+    .ToList();
+    var incubationFiltered = incubations.Where(x => x.NumberOfNonViableEggs != null && x.NumberOfViableEggs != null ).ToList();
+}
+<div class="modal fade" id="add-hatch">
+    <div class="modal-dialog">
+        <form method="post">
+            <div class="modal-content">
+                <div style="background-color: #034007" class="text-white py-3 modal-header">
+                    <h5>Add Hatch</h5>
+                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="HatchingStart" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="HatchingStart" class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="HatchingStart" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="HatchingEnd" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="HatchingEnd" class="form-control" style="border-color: #034007" />
+                        <span asp-validation-for="HatchingEnd" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="IncubationId" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <select asp-for="IncubationId" class="form-select" asp-items="@incF.Select(x => new SelectListItem(x.Incubation.Id.ToString("00000"),x.Incubation.Id.ToString()))">
+                            <option hidden disabled selected value="">Select...</option>
+                        </select>
+                        <span asp-validation-for="IncubationId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

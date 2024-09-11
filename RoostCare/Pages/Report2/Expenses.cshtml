@@ -1,0 +1,118 @@
+﻿@page
+@model RoostCare.Pages.Report2.ExpensesModel
+@{
+}
+
+<h4 class="text-center mb-3 fw-bolder">Total Expenses = @Model.Records.Sum(x => x.Amount).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fil-PH"))</h4>
+<form method="get">
+    @Html.AntiForgeryToken()
+    <div class="row mb-2">
+        <div class="col-lg-4 col-12 mb-2 mb-lg-0">
+            <div class="d-flex flex-lg-row flex-column gap-2">
+                <div>
+                    <label class="mb-1 fw-bolder">Date From</label>
+                    <input required type="date" name="dFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" class="form-control" />
+                </div>
+                <div>
+                    <label class="mb-1 fw-bolder">Date To</label>
+                    <input required type="date" name="dTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" class="form-control" />
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-4 col-12">
+            <div class="d-flex gap-2 align-items-end ms-3 h-100">
+                <button type="submit" class="btn btn-success btn-sm btn-flat">Filter</button>
+                <a asp-page="./Expenses" class="btn btn-primary btn-sm btn-flat">Get All</a>
+                <button type="button" id="button-excel" class="btn btn-info btn-sm text-white"><i class="fa fa-excel-file"></i> Excel</button>
+                <button type="button" id="button-print" class="btn btn-light btn-sm border btn-flat"><i class="fa fa-print"></i> Print</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data" class="table table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var record in Model.Records)
+                {
+                    <tr>
+                        <td>@record.Id</td>
+                        <td>@record.Date.ToString("dd/MM/yyy")</td>
+                        <td>@record.Category</td>
+                        <td>@record.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fil-PH"))</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><span class="fw-bolder">Total</span></td>
+                    <td><span class="fw-bolder">@Model.Records.Sum(x => x.Amount).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fil-PH"))</span></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+</div>
+
+
+<noscript id="print-content">
+    <div class="position-relative">
+        <img src="~/img/RoosterGreen.png" width="80" height="80" class=" position-absolute">
+        <h4 class="m-0 text-center">RoostCare</h4>
+        <h3 class="m-0 fw-bolder text-center">Expenses Report</h3>
+        <h5 class="m-0 text-center">Expenses Records</h5>
+    </div>
+    <hr>
+    <div class="d-flex align-items-center justify-content-between">
+        <h6><b>Total Expenses = @Model.Records.Sum(x => x.Amount).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fil-PH"))</b></h6>
+       
+    </div>
+
+    <hr />
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var record in Model.Records)
+            {
+                <tr>
+                    <td>@record.Id</td>
+                    <td>@record.Date.ToString("dd/MM/yyy")</td>
+                    <td>@record.Category</td>
+                    <td>@record.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fil-PH"))</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><span class="fw-bolder">Total</span></td>
+                <td><span class="fw-bolder">@Model.Records.Sum(x => x.Amount).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fil-PH"))</span></td>
+            </tr>
+        </tfoot>
+    </table>
+    <hr />
+</noscript>
+
+@section Scripts {
+    <script src="~/lib/TableExport/tableExcel.js" asp-append-version="true"></script>
+    <script src="~/js/Report.js" asp-append-version="true"></script>
+}
+
+

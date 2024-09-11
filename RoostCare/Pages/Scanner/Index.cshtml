@@ -1,0 +1,63 @@
+﻿@page
+@model RoostCare.Pages.Scanner.IndexModel
+@{
+}
+<div class="row">
+    <div class="col-lg-7 col-12">
+        <div class="bg-white shadow rounded-3 overflow-hidden mb-lg-0 mb-4">
+            <h5 class="theme-bg-green text-center py-2 fw-bolder text-white">Scan QR-Code</h5>
+            <div class="p-3">
+                <video id="rooster-scan" class="object-fit-cover w-100 h-100">
+                </video>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 col-12">
+        <div class="d-flex align-items-center flex-column justify-content-center h-100">
+            <h5 class="text-center text-secondary mb-3">Scan The Rooster QR-Code <i class="fa-solid fa-qrcode text-success"></i></h5>
+            <p class="text-body-tertiary fst-italic text-center">Please ensure that a valid and clear QR code is provided to retrieve the data from your desired rooster information database. The QR code should be generated in a format that allows seamless scanning to access the information. Kindly make sure the QR code is legible and not distorted to facilitate easy data retrieval.</p>
+        </div>
+    </div>
+    <form id="form-scan" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden" id="rooster-id"/>
+    </form>
+</div>
+@section Scripts{
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <script>
+        let scanner = new Instascan.Scanner({ video: document.querySelector('#rooster-scan') });
+        let currentCamera = null;
+
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        }
+
+        $(function () {
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    if (isMobileDevice()) {
+                        // Select the back camera on mobile devices
+                        currentCamera = cameras.find(camera => camera.name.toLowerCase().includes('back')) || cameras[0];
+                    } else {
+                        // Select the first available camera (usually the webcam) on desktops
+                        currentCamera = cameras[0];
+                    }
+                    scanner.start(currentCamera);
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+            });
+
+            scanner.addListener('scan', function (qr_data) {
+                if (qr_data != null) {
+                    $("#rooster-id").val(qr_data);
+                    $("#form-scan").submit();
+                }
+            });
+        });
+    </script>
+
+}

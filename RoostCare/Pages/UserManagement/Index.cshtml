@@ -1,0 +1,58 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> _userManager
+@model RoostCare.Pages.UserManagement.IndexModel
+@{
+}
+<h4 class="text-center mb-3 fw-bolder">User Management</h4>
+<button data-bs-target="#add-user" data-bs-toggle="modal" class="btn btn-success px-3 mb-2">ADD NEW USER</button>
+<partial name="_AddUser" model="new UserInputModel()"/>
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data" class="table table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Sex</th>
+                    <td>Email</td>
+                    <td>Phone Number</td>
+                    <td>Address</td>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var user in Model.Users)
+                {
+
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.FirstName</td>
+                        <td>@(user.MiddleName ?? "None")</td>
+                        <td>@(user.LastName ?? "None")</td>
+                        <td>@user.Sex</td>
+                        <td>@user.Email</td>
+                        <td>@(user.PhoneNumber ?? "None")</td>
+                        <td>@(user.Address ?? "None")</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-success rounded-2" data-bs-toggle="modal" data-bs-target="#update-user-@(user.Id)"><i class="fa fa-pen"></i></button>
+                                <partial name="_UpdateUser" model="new UserInputModel{Id = user.Id,Username = user.UserName,FirstName = user.FirstName,MiddleName = user.MiddleName,LastName = user.LastName,Sex = user.Sex,Email = user.Email,PhoneNumber = user.PhoneNumber,Address = user.Address}" />
+                                <button data-bs-toggle="modal" data-bs-target="#delete-record-@(user.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel{rId = user.Id}" />
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+}
+

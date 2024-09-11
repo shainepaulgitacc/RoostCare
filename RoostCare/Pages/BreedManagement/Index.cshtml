@@ -1,0 +1,94 @@
+﻿@page
+@model RoostCare.Pages.BreedManagement.IndexModel
+@{
+}
+<h4 class="text-center mb-3 fw-bolder">Breed Management</h4>
+<button data-bs-target="#add-breed" data-bs-toggle="modal" class="btn btn-success px-3 mb-3">ADD NEW BREED</button>
+<div class="modal fade" id="add-breed">
+    <div class="modal-dialog">
+        <form method="post">
+            @Html.AntiForgeryToken()
+             <div class="modal-content">
+                <div style="background-color: #034007" class="text-white py-3 modal-header">
+                    <h5>Add Breed</h5>
+                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="Input.BreedName" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                        <input asp-for="Input.BreedName" class="form-control" style="border-color: #034007" placeholder="Enter here.." />
+                        <span class="text-danger" asp-validation-for="Input.BreedName"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type ="reset" class="btn btn-light">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+       
+    </div>
+</div>
+
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+    <table id="table-data" class="table table-striped table-hover bg-white" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Coop Number</th>
+                <th>AddedAt</th>
+                <th>UpdatedAt</th>
+                <th>Action</th>
+               
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach(var breed in Model.Breeds)
+            {
+                 <tr>
+                    <td>@breed.Id.ToString("00000")</td>
+                    <td>@breed.BreedName</td>
+                    <td>@breed.UpdatedAt.ToString("MMM dd, yyy hh:mm tt")</td>
+                    <td>@breed.AddedAt.ToString("MMM dd, yyy hh:mm tt")</td>
+                    <td>
+                        <button data-bs-target="#update-breed-@(breed.Id)" data-bs-toggle="modal" class="btn btn-success"><i class="fa-solid fa-pen-square"></i></button>
+                        <div class="modal fade" id="update-breed-@(breed.Id)">
+                            <div class="modal-dialog">
+                                <form method="post" asp-page-handler="Update">
+                                    <input asp-for="Input.AddedAt" type="hidden" value="@breed.AddedAt"/>
+                                    <input asp-for="Input.Id" type="hidden" value="@breed.Id"/>
+                                    <div class="modal-content">
+                                        <div style="background-color: #034007" class="text-white py-3 modal-header">
+                                            <h5>Update Breed</h5>
+                                            <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label asp-for="Input.BreedName" class="mb-2"></label><span class="text-danger fw-bolder">*</span>
+                                                <input value="@breed.BreedName" asp-for="Input.BreedName" class="form-control" style="border-color: #034007" placeholder="Enter here.." />
+                                                <span class="text-danger" asp-validation-for="Input.BreedName"></span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="reset" class="btn btn-light">Cancel</button>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                        <button data-bs-toggle="modal" data-bs-target="#delete-record-@(breed.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                        <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel{rId = breed.Id.ToString()}"/>
+                    </td>
+                </tr>
+            }
+           
+        </tbody>
+    </table>
+    </div>
+</div>
+@section Scripts{
+   <partial name="_ValidationScriptsPartial"></partial>
+}

@@ -1,0 +1,206 @@
+﻿@page
+@model RoostCare.Pages.Dashboard.IndexModel
+@{
+}
+<div class="mb-4">
+	<h4 class="m-0">Dashboard</h4>
+	<span class="fw-bolder text-body-tertiary">Overview</span>
+</div>
+<div class="row px-3 mb-5">
+	<div class="col-lg-3  col-md-4 col-12 px-3 mb-3">
+		<div class="border border-success border-2 rounded-4 overflow-hidden" style="background-color:#CEF8D9">
+			<div class="p-2 d-flex justify-content-between align-items-center mb-2">
+				<div>
+					<h6 class="fw-bold">For Cockfight</h6>
+					<h3 class="fw-bolder">@Model.CountForCockFight.ToString("00")</h3>
+				</div>
+				<img src="~/img/RoosterGreen.png" width="60" heigt="60" />
+			</div>
+			@if (User.IsInRole("Admin"))
+			{
+				<a asp-page="/RoosterManagement/Index" class=" text-decoration-none px-3 py-2 text-white theme-bg-green d-flex align-items-center justify-content-between">
+					<span>View</span>
+					<i class="fa-solid fa-chevron-right"></i>
+				</a>
+			}
+			else
+			{
+				<span class=" text-decoration-none px-3 py-2 text-white bg-success-subtle d-flex align-items-center justify-content-between">
+					<span>View</span>
+					<i class="fa-solid fa-chevron-right"></i>
+				</span>
+			}
+		</div>
+	</div>
+	<div class="col-lg-3  col-md-4 col-12 mb-3">
+		<div class="border border-success border-2 rounded-4 overflow-hidden" style="background-color:#CEF8D9">
+			<div class="p-2 d-flex justify-content-between align-items-center mb-2">
+				<div>
+					<h6 class="fw-bold">For Sale</h6>
+					<h3 class="fw-bolder">@Model.CountForSale.ToString("00")</h3>
+				</div>
+				<img src="~/img/RoosterGreen.png" width="60" heigt="60" />
+			</div>
+			@if (User.IsInRole("Admin"))
+			{
+				<a asp-page="/RoosterManagement/Index" class=" text-decoration-none px-3 py-2 text-white theme-bg-green d-flex align-items-center justify-content-between">
+					<span>View</span>
+					<i class="fa-solid fa-chevron-right"></i>
+				</a>
+			}
+			else
+			{
+				<span class=" text-decoration-none px-3 py-2 text-white bg-success-subtle d-flex align-items-center justify-content-between">
+					<span>View</span>
+					<i class="fa-solid fa-chevron-right"></i>
+				</span>
+			}
+		</div>
+	</div>
+	<div class="col-lg-3  col-md-4  col-12 mb-3">
+		<div class="border border-success border-2 rounded-4 overflow-hidden" style="background-color:#CEF8D9">
+			<div class="p-2 d-flex justify-content-between align-items-center mb-2">
+				<div>
+					<h6 class="fw-bold">Eggs</h6>
+					<h3 class="fw-bolder">@Model.CountTotalEggs.ToString("00")</h3>
+				</div>
+				<i class="fa-solid fa-egg fs-1 theme-color-green"></i>
+			</div>
+			<a asp-page="/IncubationTracking/Index" class="text-decoration-none px-3 py-2 text-white theme-bg-green d-flex align-items-center justify-content-between">
+				<span>View</span>
+				<i class="fa-solid fa-chevron-right"></i>
+			</a>
+		</div>
+	</div>
+	<div class="col-lg-3  col-md-4 col-12 mb-3">
+		<div class="border border-success border-2 rounded-4 overflow-hidden" style="background-color:#CEF8D9">
+			<div class="p-2 d-flex justify-content-between align-items-center mb-2">
+				<div>
+					<h6 class="fw-bold">Chicks</h6>
+					<h3 class="fw-bolder">@Model.CountTotalChicks.ToString("00")</h3>
+				</div>
+				<img src="~/img/Hatchlings-removebg-preview.png" width="60" heigt="60" />
+			</div>
+			<a asp-page="/HatchManagement/Index" class="text-decoration-none px-3 py-2 text-white theme-bg-green d-flex align-items-center justify-content-between">
+				<span>View</span>
+				<i class="fa-solid fa-chevron-right"></i>
+			</a>
+		</div>
+	</div>
+	<div class="col-lg-8 col-12 mb-3 mb-lg-0 mb-md-00">
+		<div class="border border-success border-2 rounded-2 p-3 bg-white overflow-x-scroll" style="height: 400px">
+			<div class="h-100" style="width: 600px">
+				<canvas class="w-100 h-100" id="myChart"></canvas>
+			</div>
+
+		</div>
+	</div>
+	<div class="col-lg-4 col-12">
+		<div class="d-flex flex-column h-100 0justify-content-center gap-4">
+			<div class="border border-success border-2 rounded-2 p-3 bg-white">
+				<h6>Total Income</h6>
+				<div class="d-flex justify-content-center gap-2">
+					<i class="fa-solid fa-peso-sign fs-3"></i>
+					<span>@Model.TotalIncome.ToString("N2")</span>
+				</div>
+			</div>
+			<div class="border border-success border-2 rounded-2 p-3 bg-white">
+				<h6>Total Expenses</h6>
+				<div class="d-flex justify-content-center gap-2">
+					<i class="fa-solid fa-peso-sign fs-3"></i>
+					<span>@Model.TotalExpenses.ToString("N2")</span>
+				</div>
+			</div>
+			<div class="border border-success border-2 rounded-2 p-3 bg-white">
+				<h6>Net Income</h6>
+				<div class="d-flex justify-content-center gap-2">
+					<i class="fa-solid fa-peso-sign fs-3"></i>
+					<span>@Model.TotalBalance.ToString("N2")</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+		$(function () {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Page("Index", "IncomeExpenses")",
+				dataType: "json",
+				success: function (result) {
+					console.log(result);
+					const ctx = document.getElementById('myChart').getContext('2d');
+					const data = {
+						labels: [
+							'January',
+							'February',
+							'March',
+							'April',
+							'May',
+							'June',
+							'July',
+							'August',
+							'September',
+							'October',
+							'November',
+							'December'
+						],
+						datasets: [{
+							type: 'bar',
+							label: 'Expenses',
+							data: [
+								result.expensesPerMonth.january,
+								result.expensesPerMonth.february,
+								result.expensesPerMonth.march,
+								result.expensesPerMonth.april,
+								result.expensesPerMonth.may,
+								result.expensesPerMonth.june,
+								result.expensesPerMonth.july,
+								result.expensesPerMonth.august,
+								result.expensesPerMonth.september,
+								result.expensesPerMonth.october,
+								result.expensesPerMonth.november,
+								result.expensesPerMonth.december
+							],
+							borderColor: 'rgb(255, 99, 132)',
+							backgroundColor: 'rgba(255, 99, 132,0.6)'
+						}, {
+							type: 'line',
+							label: 'Income',
+							data: [
+								result.incomePerMonth.january,
+								result.incomePerMonth.february,
+								result.incomePerMonth.march,
+								result.incomePerMonth.april,
+								result.incomePerMonth.may,
+								result.incomePerMonth.june,
+								result.incomePerMonth.july,
+								result.incomePerMonth.august,
+								result.incomePerMonth.september,
+								result.incomePerMonth.october,
+								result.incomePerMonth.november,
+								result.incomePerMonth.december
+							],
+							fill: false,
+							borderColor: 'rgb(54, 162, 235)'
+						}]
+					};
+					new Chart(ctx, {
+						type: 'scatter',
+						data: data,
+						options: {}
+					});
+				},
+				error: function (req, status, error) {
+					console.log(status);
+				}
+			})
+
+
+
+		})
+
+	</script>
+}

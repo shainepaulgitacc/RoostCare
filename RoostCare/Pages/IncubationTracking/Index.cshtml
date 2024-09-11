@@ -1,0 +1,55 @@
+﻿@page
+@model RoostCare.Pages.IncubationTracking.IndexModel
+@{
+}
+<div class="mb-4">
+    <h4 class="m-0">Incubation</h4>
+    <span class="text-body-tertiary">Incubated</span>
+</div>
+<div class="d-flex justify-content-end mb-2">
+    <a asp-page="./UIncubation" class="btn btn-success">Under Incubations <i class="fa fa-arrow-right"></i></a>
+</div>
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data2" class="table table-bordered table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Batch Id</th>
+                    <th>Date Laid</th>
+                    <th>Number Of Eggs</th>
+                    <th>Incubation Start</th>
+                    <th>Incubation Complete</th>
+                    <th>Number Of Non Viable Eggs</th>
+                    <th>Number Of Viable Eggs</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var incubation in Model.IncubationTrackers)
+                {
+                    @if (incubation.NumberOfNonViableEggs != null && incubation.NumberOfViableEggs != null)
+                    {
+                        <tr>
+                            <td>@incubation.Id.ToString("00000")</td>
+                            <td>@incubation.DateLaid.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@incubation.NumberOfEggs</td>
+                            <td>@incubation.IncubationStart.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@incubation.IncubationComplete.ToString("dd MMM, yyy hh:mm tt")</td>
+                            <td>@incubation.NumberOfNonViableEggs</td>
+                            <td>@incubation.NumberOfViableEggs</td>
+                            <td class="text-nowrap">
+                                <button data-bs-toggle="modal" data-bs-target="#delete-record-@(incubation.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel(){rId = incubation.Id.ToString()}" />
+                            </td>
+                        </tr>
+                    }
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+}

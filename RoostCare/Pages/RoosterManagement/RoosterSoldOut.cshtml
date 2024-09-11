@@ -1,0 +1,46 @@
+﻿@page
+@model RoostCare.Pages.RoosterManagement.RoosterSoldOutModel
+@{
+}
+<div class="mb-4">
+    <h4 class="m-0">Rooster Management</h4>
+    <a asp-page="./Index">Rooster List /</a> <span class="text-body-tertiary">Sold</span>
+</div>
+<h4 class="text-center mb-3 fw-bolder"><i class="fa fa-peso-sign"></i> Sold</h4>
+<div class="rounded-3 p-2 shadow border border-success border-3" style="background-color:#CEF8D9">
+    <div class="overflow-x-scroll">
+        <table id="table-data" class="table table-striped table-hover bg-white" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Rooster Profile Picture</th>
+                    <th>Breed</th>
+                   
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var rooster in Model.Roosters)
+                {
+                    <tr>
+                        <td>@rooster.Rooster.Id.ToString("00000")</td>
+                        <td>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <img src="~/RProfile/@rooster.Rooster.RoosterImageFileName" width="70" height="70" class="rounded-circle" />
+                            </div>
+                        </td>
+                        <td>@rooster.Breed.BreedName</td>
+                        <td>@rooster.Rooster.Price</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-warning text-white rounded-3" asp-page="./ViewRoosterInformation" asp-route-Id="@rooster.Rooster.Id"><i class="fa-solid fa-eye"></i></a>
+                            <button data-bs-toggle="modal" data-bs-target="#delete-record-@(rooster.Rooster.Id)" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                            <partial name="PartialViews/_DeleteModal" model="new DeleteModalViewModel(){rId = rooster.Rooster.Id.ToString()}" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>

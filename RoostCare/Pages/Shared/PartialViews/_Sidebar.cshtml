@@ -1,0 +1,190 @@
+﻿@{
+
+    var menus = new SidebarViewModel[]
+    {
+        new SidebarViewModel
+        {
+            menuName="Dashboard",
+            icon="fa-solid fa-gauge",
+            link = "/Dashboard/Index"
+
+        },
+        new SidebarViewModel
+        {
+            menuName="Rooster",
+            icon="fa-solid fa-bars-progress",
+            link = "/RoosterManagement/Index",
+        },
+        new SidebarViewModel
+        {
+            menuName="Breed Management",
+            icon="fa-solid fa-bars-progress",
+            link = "/BreedManagement/Index"
+        },
+        new SidebarViewModel
+        {
+            menuName="Tasks",
+            icon="fa-solid fa-list-check",
+            submenus= new(string,string)[]
+            {
+                ("Incubation","/IncubationTracking/Index"),
+                ("Hatch","/HatchManagement/Index")
+            }
+        },
+        new SidebarViewModel
+        {
+            menuName="Income",
+            icon="fa-solid fa-money-bill-1",
+            submenus = new (string, string)[]
+            {
+                ("Cock Fights","/IncomeManagement/Index"),
+                ("Cock Sales","/IncomeManagement/CockSales"),
+                ("Chick Sales","/IncomeManagement/ChicksSales")
+            }
+
+        },
+         new SidebarViewModel
+        {
+            menuName="Expenses",
+            icon="fa-solid fa-money-bill-trend-up",
+            link = "/ExpensesManagement/Index"
+
+        },
+         new SidebarViewModel
+        {
+            menuName="Report",
+            icon="fa-solid fa-chart-simple",
+            submenus= new(string,string)[]
+            {
+                ("Income","/Report2/Income"),
+                ("Expenses","/Report2/Expenses"),
+                ("Incubated","/Report2/Incubated"),
+                ("Hatched","/Report2/Hatched"),
+                ("Fight Report","/Report2/FHistory")
+            }
+
+        },
+         new SidebarViewModel
+        {
+            menuName="User Management",
+            icon="fa-solid fa-users",
+            link = "/UserManagement/Index"
+
+        },
+        new SidebarViewModel
+        {
+          menuName = "Scanner",
+          icon = "fa-solid fa-qrcode",
+          link="/Scanner/Index"
+        },
+    };
+}
+
+<div class="border-end position-fixed left-0 overflow-y-scroll z-1" style="margin-top: 75px" id="sidebar">
+    <div class="px-4" style="margin-bottom: 100px">
+        <span class="text-nowrap text-uppercase text-white fw-bolder mb-4 d-block mt-5 d-lg-none d-md-none d-inline">Account</span>
+        <div class="d-lg-none d-md-none d-block">
+            <a asp-page="/Notification/Index" class="text-nowrap menu text-white menus d-wblock text-decoration-none rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div style="width: 30px; height: 30px;" class="rounded-2 bg-white shadow d-flex align-items-center justify-content-center">
+                        <i class="menu-icon theme-color-green fa-solid fa-bell"></i>
+                    </div>
+                    <span class="ms-2 menu-name">Notification</span>
+                </div>
+            </a>
+            <a asp-page="/UserAccount/Index" class="text-nowrap menu text-white menus d-wblock text-decoration-none rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div style="width: 30px; height: 30px;" class="rounded-2 bg-white shadow d-flex align-items-center justify-content-center">
+                        <i class="menu-icon theme-color-green fa-solid fa-user"></i>
+                    </div>
+                    <span class="ms-2 menu-name">User</span>
+                </div>
+            </a>
+        </div>
+        <span class="text-nowrap text-uppercase text-white fw-bolder mb-4 d-block mt-lg-5 mt-md-5 mt-3">Available Menus</span>
+        @foreach (var menu in menus)
+        {
+            <div>
+                @if (User.IsInRole("Admin"))
+                {
+                    @if(menu.menuName != "Scanner")
+                    {
+                        @if (menu.submenus != null)
+                        {
+
+                            <a class="text-nowrap menu text-white  menus d-block text-decoration-none rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 30px;" class="rounded-2 bg-white shadow d-flex align-items-center justify-content-center">
+                                        <i class="menu-icon theme-color-green @menu.icon fs-5"></i>
+                                    </div>
+                                    <span class="ms-2 menu-name">@menu.menuName</span>
+                                </div>
+                                <i class="dropdown-icon fa-solid fa-chevron-right"></i>
+                            </a>
+                            <div class="submenus ms-4 border-start border-white border-opacity-25 border-3 ps-3 d-flex flex-column gap-3">
+
+                                @foreach (var submenu in menu.submenus)
+                                {
+                                    <a asp-page="@submenu.Item2" class="text-nowrap text-white d-block text-secondary text-decoration-none">@submenu.Item1</a>
+
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <a asp-page="@menu.link" class="text-nowrap menu text-white menus d-wblock text-decoration-none rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 30px;" class="rounded-2 bg-white shadow d-flex align-items-center justify-content-center">
+                                        <i class="menu-icon theme-color-green @menu.icon fs-5"></i>
+                                    </div>
+                                    <span class="ms-2 menu-name">@menu.menuName</span>
+                                </div>
+                            </a>
+                        }
+                    }
+                }
+                else
+                {
+                    @if(menu.menuName != "Breed Management" && menu.menuName != "Rooster" && menu.menuName != "User Management" && menu.menuName != "Report")
+                    {
+                        @if (menu.submenus != null)
+                        {
+
+                            <a class="text-nowrap menu text-white  menus d-block text-decoration-none rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 30px;" class="rounded-2 bg-white shadow d-flex align-items-center justify-content-center">
+                                        <i class="menu-icon theme-color-green @menu.icon fs-5"></i>
+                                    </div>
+                                    <span class="ms-2 menu-name">@menu.menuName</span>
+                                </div>
+                                <i class="dropdown-icon fa-solid fa-chevron-right"></i>
+                            </a>
+                            <div class="submenus ms-4 border-start border-white border-opacity-25 border-3 ps-3 d-flex flex-column gap-3">
+
+                                @foreach (var submenu in menu.submenus)
+                                {
+                                    <a asp-page="@submenu.Item2" class="text-nowrap text-white d-block text-secondary text-decoration-none">@submenu.Item1</a>
+
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <a asp-page="@menu.link" class="text-nowrap menu text-white menus d-wblock text-decoration-none rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 30px; height: 30px;" class="rounded-2 bg-white shadow d-flex align-items-center justify-content-center">
+                                        <i class="menu-icon theme-color-green @menu.icon fs-5"></i>
+                                    </div>
+                                    <span class="ms-2 menu-name">@menu.menuName</span>
+                                </div>
+                            </a>
+                        }
+                    }
+                }
+            </div>
+        }
+    </div>
+</div>
+
+
+

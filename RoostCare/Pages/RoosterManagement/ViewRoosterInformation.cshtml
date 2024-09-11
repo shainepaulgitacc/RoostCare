@@ -1,0 +1,364 @@
+﻿@page
+@model RoostCare.Pages.RoosterManagement.ViewRoosterInformationModel
+@{
+  
+}
+<div class="bg-white shadow rounded-4 overflow-hidden">
+    <div class="border-bottom border-2 border-dark-subtle p-3 mb-3 bg-secondary-subtle d-flex align-items-center justify-content-between">
+        <h5>Rooster Information</h5>
+        @if(Model.PreviousUrl != null)
+        {
+            <a asp-page="@(Model.PreviousUrl)" class="text-decoration-none fs-5 text-dark btn-close"></a>
+        }
+        else
+        {
+            <a asp-page="./Index" class="text-decoration-none fs-5 text-dark btn-close"></a>
+        }
+
+    </div>
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-12 col-lg-4 col-md-4 mb-2">
+                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                    <img style="height: 200px; width: 200px" src="~/RProfile/@Model.Rooster.Rooster.RoosterImageFileName"/>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-12 mb-2 overflow-x-scroll remove-scrollbar">
+                <ul class="list-unstyled p-0">
+                    <li class="fw-bolder mb-3 d-flex align-items-center gap-5">
+                        <div class="d-flex align-content-center justify-content-between w-50">
+                            <h6 class=" mb-0 p-0">Category</h6>
+                            <span>:</span>
+                        </div>
+                        <h6 class=" mb-0 p-0">@Model.Rooster.Rooster.RoosterCategory</h6>
+                    </li>
+                    <li class="fw-bolder mb-3 d-flex align-items-center gap-5">
+                        <div class="d-flex align-content-center justify-content-between w-50">
+                            <h6 class=" mb-0 p-0">Breed</h6>
+                            <span>:</span>
+                        </div>
+                        <h6 class=" mb-0 p-0">@Model.Rooster.Breed.BreedName</h6>
+                    </li>
+                    @if(Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForSale)
+                    {
+                        <li class="fw-bolder mb-3 d-flex align-items-center gap-5">
+                            <div class="d-flex align-content-center justify-content-between w-50">
+                                <h6 class=" mb-0 p-0">Price</h6>
+                                <span>:</span>
+                            </div>
+                            <h6 class=" mb-0 p-0">@(Model.Rooster.Rooster.Price.ToString() ?? "N/A")</h6>
+                        </li>
+                    }
+                    @if(Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForCockFight)
+                    {
+                        <li class="fw-bolder mb-3 d-flex align-items-center gap-5">
+                            <div class="d-flex align-content-center justify-content-between w-50">
+                                <h6 class=" mb-0 p-0">Rooster Status</h6>
+                                <span>:</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <h6 class=" mb-0 px-2 py-1 rounded-pill @(Model.Rooster.Rooster.RoosterStatus == RoosterStatus.Injured ? "bg-danger":Model.Rooster.Rooster.RoosterStatus == RoosterStatus.UnderMaintenance ? "bg-primary" : Model.Rooster.Rooster.RoosterStatus == RoosterStatus.Healthy ? "bg-info" : "bg-success") text-white fw-bold">@Model.Rooster.Rooster.RoosterStatus</h6>
+                                <i data-bs-toggle="modal" data-bs-target="#update-rooster-status" class="clickable fa-solid fa-pen fs-5 text-body-tertiary"></i>
+                            </div>
+                        </li>
+                        <div class="modal fade" id="update-rooster-status">
+                            <div class="modal-dialog">
+                                <form method="post" asp-route-prevUrl="@Model.PreviousUrl" asp-route-rId="@Model.Rooster.Rooster.Id.ToString()" asp-page-handler="UpdateRStatus">
+                                    @Html.AntiForgeryToken()
+                                    <div class="modal-content">
+                                        <div style="background-color: #034007" class="text-white py-3 modal-header">
+                                            <h5>Update Rooster Status</h5>
+                                            <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label>Rooster Status</label>
+                                                <select class="form-select border border-success" required asp-for="RStatInput">
+                                                    @foreach (var rS in Enum.GetValues(typeof(RoosterStatus)))
+                                                    {
+
+                                                        @if ((int)rS == (int)Model.Rooster.Rooster.RoosterStatus)
+                                                        {
+                                                            <option selected value="@((int)rS)">@rS</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@((int)rS)">@rS</option>
+                                                        }
+
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="reset" class="btn btn-light">Cancel</button>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+               </ul>
+            </div>
+            <div class="col-lg-4 col-12 mb-4">
+                <button @(User.IsInRole("Staff") ? "disabled" : "") data-bs-target="#qrcode-download" data-bs-toggle="modal" class="btn-success btn w-100 py-2">Download QR-Code <i class="fa-solid fa-qrcode"></i></button>
+                <vc:download-qr-code id="@Model.Rooster.Rooster.Id" />
+            </div>
+
+            <div class="d-flex align-items-center justify-content-end gap-1">
+                @if (Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForCockFight)
+                {
+                    <button data-bs-toggle="modal" data-bs-target="#add-fight-history" class="text-white btn theme-bg-green mb-2"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                }
+               
+                <div class="modal fade" id="add-fight-history">
+                    <div class="modal-dialog">
+                        <form method="post" asp-page-handler="AddFight" asp-route-prevUrl="@Model.PreviousUrl">
+                            @Html.AntiForgeryToken()
+                            <input asp-for="FInputModel.RoosterId" value="@Model.Rooster.Rooster.Id" type="hidden" />
+                            <div class="modal-content">
+                               
+                                <div class="theme-bg-green text-white py-3 modal-header">
+                                    <h5>Add Fight History</h5>
+                                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label asp-for="FInputModel.FightResult" class="mb-2 fw-bold">Fight Result<span class="text-danger">*</span></label>
+                                        <select class="form-select border border-success" asp-for="FInputModel.FightResult" asp-items="@Html.GetEnumSelectList<FightResult>()"></select>
+                                        <span asp-validation-for="FInputModel.FightResult"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="FInputModel.RoosterInjury" class="mb-2 fw-bold">Rooster Injury<span class="text-danger">*</span></label>
+                                        <select class="form-select border border-success" asp-for="FInputModel.RoosterInjury" asp-items="@Html.GetEnumSelectList<RoosterInjury>()"></select>
+                                        <span asp-validation-for="FInputModel.RoosterInjury"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="FInputModel.DateOfFight" class="mb-2 fw-bold">Date Of the fight</label>
+                                        <input class="form-control border border-success" asp-for="FInputModel.DateOfFight" />
+                                        <span asp-validation-for="FInputModel.DateOfFight"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn theme-bg-green text-white">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <button data-bs-toggle="modal" data-bs-target="#add-medication-history" class="btn theme-bg-green mb-2"><i class="fa-solid fa-prescription-bottle-medical text-white"></i></button>
+                <div class="modal fade" id="add-medication-history">
+                    <div class="modal-dialog">
+                        <form method="post" asp-page-handler="AddMedication" asp-route-prevUrl="@Model.PreviousUrl">
+                            @Html.AntiForgeryToken()
+                            <input asp-for="MInputModel.RoosterId" value="@Model.Rooster.Rooster.Id" type="hidden" />
+                            <div class="modal-content">
+
+                                <div class="theme-bg-green text-white py-3 modal-header">
+                                    <h5>Add Medication History</h5>
+                                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label asp-for="MInputModel.DateAdministered" class="mb-2 fw-bold">Date Administered<span class="text-danger">*</span></label>
+                                        <input class="form-control border border-success" asp-for="MInputModel.DateAdministered" />
+                                        <span asp-validation-for="MInputModel.DateAdministered" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="MInputModel.Vitamin" class="mb-2 fw-bold">Vitamin</label>
+                                        <input class="form-control border border-success" asp-for="MInputModel.Vitamin" placeholder="Enter here..." />
+                                        <span asp-validation-for="MInputModel.Vitamin" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn theme-bg-green text-white">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <nav>
+                    <div class="nav nav-tabs flex-nowrap" id="nav-tab" role="tablist">
+                        @if (Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForCockFight)
+                        {
+                            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-fight-history" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Fight History</button>
+                        }
+                        <button class="nav-link @(Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForSale ? "active":"")" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-medical-history" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Medication History</button>
+                    </div>
+                </nav>
+                <div class="tab-content p-lg-4 p-0" id="nav-tabContent">
+                    <div class="tab-pane fade  @(Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForCockFight ? "active show":"")  " id="nav-fight-history" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                        <div class="overflow-x-scroll">
+                            <table id="table-data2" class="table table-striped table}-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Fight Result</th>
+                                        <th>Fight Injury</th>
+                                        <th>Date Of Fight</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    @foreach (var fightHistory in Model.FightHistories)
+                                    {
+                                        <tr>
+                                            <td>@fightHistory.Id</td>
+                                            <td class="@(fightHistory.FightResult == FightResult.Win? "text-success":fightHistory.FightResult == FightResult.Loss ?"text-danger":"text-primary")">@fightHistory.FightResult</td>
+                                            <td class="@(fightHistory.RoosterInjury == RoosterInjury.None? "text-success":fightHistory.RoosterInjury ==  RoosterInjury.Major ?"text-danger":"text-primary")">@fightHistory.RoosterInjury</td>
+                                            <td>@(fightHistory.DateOfFight.ToString("dd MMM, yyy hh:mm tt "))</td>
+                                            <td class="text-nowrap">
+                                                <button data-bs-toggle="modal" data-bs-target="#update-fight-history-@fightHistory.Id" class="text-white btn btn-success"><i class="fa-solid fa-pen"></i></button>
+                                                <div class="modal fade" id="update-fight-history-@(fightHistory.Id)">
+                                                    <div class="modal-dialog">
+                                                        <form method="post" asp-page-handler="UpdateFight" asp-route-prevUrl="@Model.PreviousUrl">
+                                                            @Html.AntiForgeryToken()
+                                                            <input asp-for="FInputModel.RoosterId" value="@fightHistory.RoosterId" type="hidden" />
+                                                            <input asp-for="FInputModel.Id" value="@fightHistory.Id" type="hidden" />
+                                                            <input asp-for="FInputModel.AddedAt" type="hidden" value="@fightHistory.AddedAt.ToString("yyyy-MM-ddTHH:mm")" />
+                                                            <div class="modal-content">
+                                                                <div class="theme-bg-green text-white py-3 modal-header">
+                                                                    <h5>Update Fight History</h5>
+                                                                    <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label asp-for="FInputModel.FightResult" class="mb-2 fw-bold">Fight Result<span class="text-danger">*</span></label>
+                                                                        <select class="form-select border border-success" asp-for="FInputModel.FightResult">
+                                                                            @foreach (var p in Enum.GetValues(typeof(FightResult)))
+                                                                            {
+
+                                                                                @if ((int)p == (int)fightHistory.FightResult)
+                                                                                {
+                                                                                    <option selected value="@((int)p)">@p</option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@((int)p)">@p</option>
+                                                                                }
+
+                                                                            }
+                                                                        </select>
+                                                                        <span asp-validation-for="FInputModel.FightResult"></span>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label asp-for="FInputModel.RoosterInjury" class="mb-2 fw-bold">Rooster Injury<span class="text-danger">*</span></label>
+                                                                        <select class="form-select border border-success" asp-for="FInputModel.RoosterInjury">
+                                                                            @foreach (var p in Enum.GetValues(typeof(RoosterInjury)))
+                                                                            {
+
+                                                                                @if ((int)p == (int)fightHistory.RoosterInjury)
+                                                                                {
+                                                                                    <option selected value="@((int)p)">@p</option>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <option value="@((int)p)">@p</option>
+                                                                                }
+
+                                                                            }
+                                                                        </select>
+                                                                        <span asp-validation-for="FInputModel.RoosterInjury"></span>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label asp-for="FInputModel.DateOfFight" class="mb-2 fw-bold">Date Of the fight</label>
+                                                                        <input class="form-control border border-success" value="@fightHistory.DateOfFight.ToString("yyyy-MM-ddTHH:mm")" asp-for="FInputModel.DateOfFight" />
+                                                                        <span asp-validation-for="FInputModel.DateOfFight"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn theme-bg-green text-white">Update</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                                <a asp-page-handler="DeleteFightHistory" asp-route-Id="@fightHistory.RoosterId" asp-route-rId="@fightHistory.Id" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+               
+                    </div>
+                    <div class="tab-pane fade  @(Model.Rooster.Rooster.RoosterCategory == RoosterCategory.ForSale ? "active show":"")" id="nav-medical-history" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                        <div class="overflow-x-scroll">
+                        <table id="table-data" class="table table-striped table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Date Administered</th>
+                                    <th>Vitamin</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                @foreach(var medicationHistory in Model.MedicationHistories)
+                                {
+                                    <tr>
+                                        <td>@medicationHistory.Id</td>
+                                        <td>@medicationHistory.DateAdministered.ToString("dd MMM, yyy hh:mm tt")</td>
+                                        <td>@medicationHistory.Vitamin</td>
+                                        <td class="text-nowrap">
+                                            <button data-bs-toggle="modal" data-bs-target="#update-medication-history-@medicationHistory.Id" class="text-white btn btn-success"><i class="fa-solid fa-pen"></i></button>
+                                            <div class="modal fade" id="update-medication-history-@(medicationHistory.Id)">
+                                                <div class="modal-dialog">
+                                                    <form method="post" asp-page-handler="UpdateMedication" asp-route-prevUrl="@Model.PreviousUrl">
+                                                            @Html.AntiForgeryToken()
+                                                        <input asp-for="MInputModel.RoosterId" value="@medicationHistory.RoosterId" type="hidden" />
+                                                        <input asp-for="MInputModel.Id" value="@medicationHistory.Id" type="hidden" />
+                                                        <input asp-for="MInputModel.AddedAt" value="@medicationHistory.AddedAt.ToString("yyyy-MM-ddTHH:mm")" type="hidden" />
+                                                        <div class="modal-content">
+
+                                                            <div class="theme-bg-green text-white py-3 modal-header">
+                                                                <h5>Update Medication History</h5>
+                                                                <i data-bs-dismiss="modal" class="fa-solid fa-xmark"></i>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label  asp-for="MInputModel.DateAdministered" class="mb-2 fw-bold">Date Administered<span class="text-danger">*</span></label>
+                                                                    <input value="@medicationHistory.DateAdministered.ToString("yyyy-MM-ddTHH:mm")" class="form-select border border-success" asp-for="MInputModel.DateAdministered" />
+                                                                    <span asp-validation-for="MInputModel.DateAdministered" class="text-danger"></span>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label asp-for="MInputModel.Vitamin" class="mb-2 fw-bold">Vitamin</label>
+                                                                    <input value="@medicationHistory.Vitamin" class="form-control border border-success" asp-for="MInputModel.Vitamin" />
+                                                                    <span asp-validation-for="MInputModel.Vitamin"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn theme-bg-green text-white">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                            <a asp-page-handler="DeleteMedicationHistory" asp-route-Id="@medicationHistory.RoosterId" asp-route-rId="@medicationHistory.Id" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+}
